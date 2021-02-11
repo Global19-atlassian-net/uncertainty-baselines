@@ -105,6 +105,9 @@ def _extract_hyperparameter_dictionary():
 
 
 def main(argv):
+  fmt = '[%(filename)s:%(lineno)s] %(message)s'
+  formatter = logging.PythonFormatter(fmt)
+  logging.get_absl_handler().setFormatter(formatter)
   del argv  # unused arg
 
   tf.io.gfile.makedirs(FLAGS.output_dir)
@@ -133,6 +136,7 @@ def main(argv):
   train_dataset = ub.datasets.get(
       FLAGS.dataset,
       split=tfds.Split.TRAIN,
+      download_data=True,
       validation_percent=1. - FLAGS.train_proportion).load(
           batch_size=batch_size)
   clean_test_dataset = ub.datasets.get(
